@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free Text to Speech (TTS) - No Sign Up - Deniz Kasap</title>
+    <meta name="description"
+        content="Free text-to-speech tool (TTS). No character limit, no sign-up, browser-based. Paste your text and listen, downloading audio is not supported." />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://denizkasap.net/en/tools/text-to-speech/" />
+    <meta property="og:title" content="Free Text to Speech (TTS) - No Sign Up - Deniz Kasap" />
+    <meta property="og:description"
+        content="Free text-to-speech tool (TTS). No character limit, no sign-up, browser-based. Paste your text and listen, downloading audio is not supported." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://denizkasap.net/en/tools/text-to-speech/" />
+    <meta property="og:image" content="https://denizkasap.net/deniz-kasap.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Free Text to Speech (TTS) - No Sign Up - Deniz Kasap" />
+    <meta name="twitter:description"
+        content="Free text-to-speech tool (TTS). No character limit, no sign-up, browser-based. Paste your text and listen, downloading audio is not supported." />
+    <meta name="twitter:image" content="https://denizkasap.net/deniz-kasap.webp" />
+    <style>
+        body.tool {
+            display: block;
+            min-height: 100vh;
+            padding: 0 1.5rem;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        body.tool .lu {
+            text-align: center;
+            margin: 0 auto;
+            padding-bottom: 1.5rem;
+        }
+
+        body.tool::after {
+            opacity: 0.1;
+        }
+
+        [data-theme="light"] body.tool::after {
+            opacity: 0.3;
+        }
+
+        /* NAV */
+
+        /* TOOL MAIN */
+        body.tool main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding-bottom: 5rem;
+            display: block;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 0.15em 0.5em;
+            margin-bottom: 1rem;
+        }
+
+        /* TEXTAREA */
+        .textarea-wrap {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        #input-text {
+            width: 100%;
+            min-height: 220px;
+            background: var(--surface);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.1rem 1.25rem;
+            font-family: var(--sans-font);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        /* Custom scrollbar for textarea */
+        #input-text::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #input-text::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 4px;
+        }
+
+        #input-text::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+            transition: background 0.15s;
+            cursor: default;
+        }
+
+        #input-text::-webkit-scrollbar-thumb:hover {
+            background: var(--muted);
+        }
+
+        #input-text:focus {
+            border-color: var(--accent);
+        }
+
+        #input-text::placeholder {
+            color: var(--subtle);
+        }
+
+        .char-count {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--subtle);
+            pointer-events: none;
+            background: var(--surface);
+            padding: 0 0.25rem;
+            border-radius: 3px;
+        }
+
+        /* HIGHLIGHT PREVIEW */
+        #highlight-box {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.1rem 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            min-height: 80px;
+            max-height: 180px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            word-break: break-word;
+            scrollbar-width: none;
+        }
+
+        #highlight-box::-webkit-scrollbar {
+            display: none;
+        }
+
+        #highlight-box .word {
+            transition: background 0.1s;
+            border-radius: 3px;
+            padding: 0 1px;
+        }
+
+        #highlight-box .word.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* CONTROLS */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 540px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-panel {
+            margin-bottom: 1.25rem;
+        }
+
+        .settings-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-family: var(--sans-font);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            margin-bottom: 0;
+            padding: 0.35rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: transparent;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+
+        .settings-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .settings-toggle:hover {
+            color: var(--fg);
+            border-color: var(--muted);
+            background: var(--surface);
+        }
+
+        .settings-panel[open] .settings-toggle {
+            color: var(--fg);
+            border-color: var(--accent);
+            background: var(--surface);
+            margin-bottom: 1rem;
+        }
+
+        .controls-grid--settings {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+            font-family: var(--sans-font);
+        }
+
+        select {
+            width: 100%;
+            background: var(--surface);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.85rem;
+            font-family: var(--sans-font);
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.15s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            padding-right: 2.2rem;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 20px;
+            outline: none;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        /* Webkit browsers (Chrome, Safari, Edge) */
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 5px;
+            background: var(--border);
+            border-radius: 100px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            margin-top: -5px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.0);
+        }
+
+        /* Firefox */
+        input[type="range"]::-moz-range-track {
+            background: var(--border);
+            border-radius: 100px;
+            height: 5px;
+            border: none;
+        }
+
+        input[type="range"]::-moz-range-progress {
+            background: var(--accent);
+            border-radius: 100px;
+            height: 5px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb:active {
+            transform: scale(1.0);
+        }
+
+        /* BUTTONS */
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: var(--sans-font);
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: opacity 0.15s, transform 0.1s, background 0.15s;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--accent-aaa);
+            color: #fff;
+            padding: 0.65rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            opacity: 0.85;
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            padding: 0.65rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* STATUS */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+            min-height: 1.4rem;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .status-dot.playing {
+            background: var(--accent);
+            animation: pulse 1.2s infinite;
+        }
+
+        .status-dot.paused {
+            background: #f59e0b;
+        }
+
+        .status-dot.error {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* PROGRESS */
+        .progress-wrap {
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s linear;
+        }
+
+        /* INFO FOOTER */
+        .info {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--subtle);
+            line-height: 1.7;
+        }
+    </style>
+    <script>(function () { var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t) })();</script>
+</head>
+
+<body class="tool" data-lang="en">
+    <style></style>
+
+    <div class="top-bar">
+        <div class="theme-switcher" role="group" aria-label="Color theme">
+            <button class="theme-opt" data-mode="light" aria-label="Light mode">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+            </button>
+            <button class="theme-opt" data-mode="dark" aria-label="Dark mode">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
+            <button class="theme-opt" data-mode="auto" aria-label="System theme">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+            </button>
+        </div>
+        <nav class="lang-switcher" aria-label="Language switcher">
+            <a href="/tools/text-to-speech/" class="lang-opt" hreflang="tr" lang="tr">TR</a>
+            <span class="lang-opt lang-opt--active" aria-current="true">EN</span>
+        </nav>
+    </div>
+
+    <main>
+        <a href="/en/" class="post-back">&larr; denizkasap.net</a>
+        <div class="page-header">
+            <div class="badge"><a href="/en/tools/">Tool</a></div>
+            <h1>Free Text to Speech (TTS)</h1>
+            <p>No character limit. No API costs. No sign-up, no email list, no account required. Just paste the text
+                you want to hear. However, <a href="#audio-quality-and-download">downloading is not available</a>.</p>
+        </div>
+
+        <div class="textarea-wrap">
+            <textarea id="input-text" placeholder="Paste your text here…" spellcheck="false"></textarea>
+            <span class="char-count" id="char-count">0 characters</span>
+        </div>
+
+        <div id="highlight-box"></div>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <label for="voice-select">Voice</label>
+                <select id="voice-select">
+                    <option value="">Loading…</option>
+                </select>
+            </div>
+        </div>
+
+        <details class="settings-panel">
+            <summary class="settings-toggle">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                Settings
+            </summary>
+            <div class="controls-grid controls-grid--settings">
+                <div class="control-group">
+                    <label>Speed = <span id="rate-label">1.0×</span></label>
+                    <div class="slider-row">
+                        <input type="range" id="rate-slider" min="0.5" max="2" step="0.05" value="1"
+                            aria-label="Speed" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Pitch = <span id="pitch-label">1.0</span></label>
+                    <div class="slider-row">
+                        <input type="range" id="pitch-slider" min="0.5" max="2" step="0.05" value="1"
+                            aria-label="Pitch" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Volume = <span id="vol-label">100%</span></label>
+                    <div class="slider-row">
+                        <input type="range" id="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume" />
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-primary" id="btn-play">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21" />
+                </svg>
+                Play
+            </button>
+            <button class="btn-secondary" id="btn-pause" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                </svg>
+                Pause
+            </button>
+            <button class="btn-secondary" id="btn-stop" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="4" y="4" width="16" height="16" />
+                </svg>
+                Stop
+            </button>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-dot" id="status-dot"></div>
+            <span id="status-text">Ready</span>
+        </div>
+
+        <div class="info">
+            <h2>Why did I build this?</h2>
+            <p>
+                I like listening to written content while working, but every tool I found either imposed a character
+                limit or required an account. So I built my own. The text you paste here is not stored anywhere.
+            </p>
+            <h2>How does it work?</h2>
+            <p>
+                This tool doesn't rely on any paid API. It uses the browser's built-in <strong>Web Speech API</strong>.
+                Whatever you type or paste is processed directly on your device. Nothing is sent to any server, and
+                there's no character limit. If you want to use it fully offline, you can download the source code from
+                <a href="https://github.com/..." target="_blank" rel="noopener">GitHub</a>, setup instructions are
+                included.
+            </p>
+
+            <h3>If your preferred voice isn't in the list</h3>
+            <p>
+                Voices come from your operating system. If a language's voice isn't installed, it won't appear in the
+                list.
+                Here's how to add voices:
+            </p>
+            <p>
+                <strong>macOS:</strong> System Settings → Accessibility → Spoken Content → System Voice → Manage Voices.
+            </p>
+            <p>
+                <strong>Windows:</strong> Settings → Time &amp; Language → Language → Add a language pack; the TTS voice
+                comes bundled with it. You may need to restart your browser after installing.
+            </p>
+            <p>
+                <strong>Linux:</strong> Install <code>espeak-ng</code> or <code>speech-dispatcher</code>.
+                On Debian/Ubuntu: <code>sudo apt install espeak-ng</code>
+            </p>
+            <p>
+                Available voices on Linux tend to sound more robotic compared to macOS or Windows.
+            </p>
+            <h2 id="audio-quality-and-download">Audio quality and downloading</h2>
+            <p>
+                Downloading audio is <strong>not available</strong>. The browser's Web Speech API doesn't expose the
+                audio
+                output for export. If you need a downloadable file, try
+                <strong><a href="https://ttsmaker.com" target="_blank" rel="noopener noreferrer">TTSMaker</a></strong>
+                (There is a character limit per request, 20,000 characters per week for free).
+            </p>
+            <p>
+                Voice quality depends entirely on your operating system. Windows uses Microsoft voices, macOS uses Apple
+                voices, Android uses Google voices. The Edge browser generally offers the widest and highest-quality
+                selection.
+            </p>
+            <p>
+                Compared to paid services like
+                <strong><a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer">ElevenLabs</a>,
+                    <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener noreferrer">Google
+                        Cloud TTS</a></strong>,
+                or <strong><a href="https://aws.amazon.com/polly/" target="_blank" rel="noopener noreferrer">Amazon
+                        Polly</a></strong>,
+                these voices will sound more mechanical. No neural intonation, emphasis, or breath effects. If you need
+                high-quality AI voices, ElevenLabs offers 10,000 characters per month on their free plan.
+            </p>
+            <h2>Why do other free TTS sites have character limits?</h2>
+            <p>
+                Most free TTS sites are actually calling a paid API behind the scenes and paying per character.
+                The limits exist to control costs or push users toward a paid plan. Since this tool calls the
+                browser API directly, there's no cost and no limit.
+            </p>
+            <h2>How to use TTS on your computer without any software?</h2>
+            <p>
+                Besides this tool, you can also listen to any text using your operating system's built-in features.
+            </p>
+            <p>
+                <strong>macOS:</strong> Select the text you want to hear, right-click → Speech → Start Speaking.
+                To assign a keyboard shortcut, go to System Settings → Accessibility → Spoken Content →
+                enable "Speak selection".
+            </p>
+            <p>
+                <strong>Windows:</strong> Open any webpage or PDF in Edge, right-click → Read Aloud.
+                Keyboard shortcut: <code>Ctrl + Shift + U</code>. This feature is specific to Edge.
+                Chrome and Firefox do not have a built-in read aloud option, but both support TTS extensions:
+                <a href="https://chromewebstore.google.com/search/text%20to%20speech" target="_blank"
+                    rel="noopener noreferrer">Chrome Web Store</a>,
+                <a href="https://addons.mozilla.org/en-US/firefox/search/?q=text%20to%20speech" target="_blank"
+                    rel="noopener noreferrer">Firefox Add-ons</a>.
+                For Word documents, go to Review → Read Aloud.
+            </p>
+            <p>
+                <strong>Linux:</strong> Can be used via terminal with <code>espeak-ng</code>.
+                Example: <code>espeak-ng "hello world"</code>.
+                If you prefer a GUI, Festival or Speech Dispatcher are available as alternatives.
+            </p>
+        </div>
+    </main>
+    <div class="lu">
+        <p>est. 2024</p>
+    </div>
+    <script>// TTS TOOL
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const DOM = {
+                input: document.getElementById('input-text'),
+                charCount: document.getElementById('char-count'),
+                voiceSel: document.getElementById('voice-select'),
+                rateSlider: document.getElementById('rate-slider'),
+                rateLabel: document.getElementById('rate-label'),
+                pitchSlider: document.getElementById('pitch-slider'),
+                pitchLabel: document.getElementById('pitch-label'),
+                volSlider: document.getElementById('vol-slider'),
+                volLabel: document.getElementById('vol-label'),
+                btnPlay: document.getElementById('btn-play'),
+                btnPause: document.getElementById('btn-pause'),
+                btnStop: document.getElementById('btn-stop'),
+                statusDot: document.getElementById('status-dot'),
+                statusText: document.getElementById('status-text'),
+                progressBar: document.getElementById('progress-bar'),
+                highlightBox: document.getElementById('highlight-box')
+            };
+
+            const state = {
+                voices: [],
+                chunks: [],
+                chunkIndex: 0,
+                pausedAtChunk: 0,
+                wordSpans: [],
+                wordCharRanges: [],
+                isPaused: false,
+                totalWords: 0,
+                keepAliveTimer: null
+            };
+
+            const pageLang = document.body.dataset.lang || 'tr';
+            const i18n = {
+                tr: { characters: 'karakter', locale: 'tr-TR', primaryLang: 'tr', play: 'Oynat', resume: 'Devam', reading: 'Okunuyor…', resuming: 'Devam ediyor…', paused: 'Duraklatıldı', done: 'Tamamlandı' },
+                en: { characters: 'characters', locale: 'en-US', primaryLang: 'en', play: 'Play', resume: 'Resume', reading: 'Reading…', resuming: 'Resuming…', paused: 'Paused', done: 'Done' }
+            };
+            const t = i18n[pageLang] || i18n.tr;
+
+            // Input Events
+            let textSaveTimer;
+            if (DOM.input) {
+                DOM.input.addEventListener('input', () => {
+                    DOM.charCount.textContent = `${DOM.input.value.length.toLocaleString(t.locale)} ${t.characters}`;
+                    clearTimeout(textSaveTimer);
+                    textSaveTimer = setTimeout(() => localStorage.setItem('tts-text', DOM.input.value), 500);
+                });
+            }
+
+            const updateLabel = (slider, label, suffix = '') => {
+                slider.addEventListener('input', e => {
+                    let val = parseFloat(e.target.value);
+                    label.textContent = suffix === '%' ? `${Math.round(val * 100)}%` : `${val.toFixed(2)}${suffix}`;
+                });
+            };
+
+            if (DOM.rateSlider) {
+                updateLabel(DOM.rateSlider, DOM.rateLabel, '×');
+                // Slider bırakılınca çalışıyorsa mevcut chunk'ı yeniden başlat
+                DOM.rateSlider.addEventListener('change', () => {
+                    if (!state.isPaused && window.speechSynthesis.speaking) {
+                        const idx = state.chunkIndex;
+                        window.speechSynthesis.cancel();
+                        setTimeout(() => playChunk(idx), 50);
+                    }
+                });
+            }
+            if (DOM.pitchSlider) updateLabel(DOM.pitchSlider, DOM.pitchLabel);
+            if (DOM.volSlider) updateLabel(DOM.volSlider, DOM.volLabel, '%');
+
+            // Save slider values on change
+            if (DOM.rateSlider) DOM.rateSlider.addEventListener('change', () => localStorage.setItem('tts-rate', DOM.rateSlider.value));
+            if (DOM.pitchSlider) DOM.pitchSlider.addEventListener('change', () => localStorage.setItem('tts-pitch', DOM.pitchSlider.value));
+            if (DOM.volSlider) DOM.volSlider.addEventListener('change', () => localStorage.setItem('tts-vol', DOM.volSlider.value));
+
+            // Voice Loading
+            function populateVoiceSelect() {
+                const primary = state.voices.filter(v => v.lang.startsWith(t.primaryLang));
+                const secondary = state.voices.filter(v => !v.lang.startsWith(t.primaryLang) && (v.lang.startsWith('tr') || v.lang.startsWith('en')));
+                const displayVoices = (primary.length || secondary.length) ? [...primary, ...secondary] : state.voices;
+
+                const savedVoice = localStorage.getItem('tts-voice');
+                let defaultSet = false;
+                let optionsHTML = '';
+
+                displayVoices.forEach(v => {
+                    const isPrimary = v.lang.startsWith(t.primaryLang);
+                    let isSelected = savedVoice ? v.voiceURI === savedVoice : (!defaultSet && isPrimary);
+                    if (isSelected) defaultSet = true;
+                    optionsHTML += `<option value="${v.voiceURI}"${isSelected ? ' selected' : ''}>${v.name} (${v.lang})</option>`;
+                });
+
+                if (DOM.voiceSel) DOM.voiceSel.innerHTML = optionsHTML;
+            }
+
+            // iOS'ta onvoiceschanged hiç tetiklenmez, retry gerekiyor
+            function loadVoices(attempt) {
+                attempt = attempt || 0;
+                state.voices = window.speechSynthesis.getVoices();
+                if (!state.voices.length) {
+                    if (attempt < 15) setTimeout(() => loadVoices(attempt + 1), 200);
+                    return;
+                }
+                populateVoiceSelect();
+            }
+
+            window.speechSynthesis.onvoiceschanged = () => loadVoices(0);
+            loadVoices(0);
+
+            // Seçilen sesi kaydet
+            if (DOM.voiceSel) {
+                DOM.voiceSel.addEventListener('change', () => {
+                    localStorage.setItem('tts-voice', DOM.voiceSel.value);
+                });
+            }
+
+            // Text Processing
+            function splitIntoChunks(text) {
+                const result = [];
+                const regex = /[^.!?\n]+[.!?\n]*/g;
+                let m;
+                while ((m = regex.exec(text)) !== null) result.push({ text: m[0], start: m.index });
+                return result.length ? result : [{ text, start: 0 }];
+            }
+
+            function buildHighlight(text) {
+                if (!DOM.highlightBox) return;
+                DOM.highlightBox.style.display = 'block';
+                DOM.highlightBox.innerHTML = '';
+                state.wordSpans = [];
+                state.wordCharRanges = [];
+                const fragment = document.createDocumentFragment();
+                // Kelimeleri karakter pozisyonuyla birlikte takip et
+                const wordRegex = /\S+/g;
+                let m, lastIndex = 0;
+                while ((m = wordRegex.exec(text)) !== null) {
+                    if (m.index > lastIndex) fragment.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+                    const span = document.createElement('span');
+                    span.className = 'word';
+                    span.textContent = m[0];
+                    fragment.appendChild(span);
+                    state.wordSpans.push(span);
+                    state.wordCharRanges.push({ start: m.index, end: m.index + m[0].length });
+                    lastIndex = m.index + m[0].length;
+                }
+                if (lastIndex < text.length) fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+                DOM.highlightBox.appendChild(fragment);
+                state.totalWords = state.wordSpans.length;
+            }
+
+            // UI State
+            function setStatus(type, msg) {
+                if (DOM.statusDot) DOM.statusDot.className = `status-dot ${type}`;
+                if (DOM.statusText) DOM.statusText.textContent = msg;
+            }
+
+            function toggleStatusVisibility(show) {
+                const display = show ? 'flex' : 'none';
+                const statusContainer = DOM.statusDot && DOM.statusDot.parentElement;
+                if (statusContainer) statusContainer.style.display = display;
+                if (DOM.progressBar && DOM.progressBar.parentElement) DOM.progressBar.parentElement.style.display = show ? 'block' : 'none';
+            }
+
+            function finishPlayback(isStopped = false) {
+                window.speechSynthesis.cancel();
+                if (state.keepAliveTimer) clearInterval(state.keepAliveTimer);
+
+                if (DOM.btnPlay) DOM.btnPlay.disabled = false;
+                if (DOM.btnPause) DOM.btnPause.disabled = true;
+                if (DOM.btnStop) DOM.btnStop.disabled = true;
+                if (DOM.btnPlay) DOM.btnPlay.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> ${t.play}`;
+
+                state.isPaused = false;
+                if (isStopped) {
+                    if (DOM.progressBar) DOM.progressBar.style.width = '0%';
+                    toggleStatusVisibility(false);
+                } else {
+                    if (DOM.progressBar) DOM.progressBar.style.width = '100%';
+                    setStatus('', t.done);
+                    setTimeout(() => toggleStatusVisibility(false), 1500);
+                }
+            }
+
+            // Core Playback
+            function playChunk(idx) {
+                if (idx >= state.chunks.length) {
+                    finishPlayback();
+                    return;
+                }
+
+                const chunk = state.chunks[idx];
+                const utter = new SpeechSynthesisUtterance(chunk.text);
+
+                const selectedURI = DOM.voiceSel ? DOM.voiceSel.value : null;
+                const selectedVoice = selectedURI ? state.voices.find(v => v.voiceURI === selectedURI) : null;
+
+                if (selectedVoice) {
+                    utter.voice = selectedVoice;
+                    utter.lang = selectedVoice.lang;
+                }
+
+                if (DOM.rateSlider) utter.rate = parseFloat(DOM.rateSlider.value);
+                if (DOM.pitchSlider) utter.pitch = parseFloat(DOM.pitchSlider.value);
+                if (DOM.volSlider) utter.volume = parseFloat(DOM.volSlider.value);
+
+                utter.onboundary = (e) => {
+                    if (e.name !== 'word') return;
+                    // charIndex ile tam pozisyon bul — emoji/sembol sayacı kaydırmaz
+                    const absolutePos = chunk.start + e.charIndex;
+                    let wordIdx = -1;
+                    for (let i = 0; i < state.wordCharRanges.length; i++) {
+                        if (state.wordCharRanges[i].start <= absolutePos && absolutePos < state.wordCharRanges[i].end) {
+                            wordIdx = i;
+                            break;
+                        }
+                    }
+                    if (wordIdx === -1) return;
+                    state.wordSpans.forEach((s, i) => s.classList.toggle('active', i === wordIdx));
+                    if (DOM.highlightBox) {
+                        const activeSpan = state.wordSpans[wordIdx];
+                        if (activeSpan) activeSpan.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                    }
+                    if (DOM.progressBar) DOM.progressBar.style.width = `${((wordIdx + 1) / state.totalWords) * 100}%`;
+                };
+
+                utter.onend = () => {
+                    state.chunkIndex++;
+                    if (!state.isPaused) playChunk(state.chunkIndex);
+                };
+
+                utter.onerror = (e) => {
+                    // cancel() çağrısı 'interrupted' hatasını tetikler — gerçek hata değil
+                    if (e.error === 'interrupted') return;
+                    finishPlayback(true);
+                };
+
+                window.speechSynthesis.speak(utter);
+            }
+
+            // Controls
+            if (DOM.btnPlay) {
+                DOM.btnPlay.addEventListener('click', () => {
+                    if (!DOM.input) return;
+                    const text = DOM.input.value.trim();
+                    if (!text) return;
+
+                    if (state.isPaused) {
+                        state.isPaused = false;
+                        setStatus('playing', t.resuming);
+                        DOM.btnPlay.disabled = true;
+                        if (DOM.btnPause) DOM.btnPause.disabled = false;
+                        playChunk(state.pausedAtChunk);
+                        return;
+                    }
+
+                    window.speechSynthesis.cancel();
+                    state.chunks = splitIntoChunks(text);
+                    state.chunkIndex = 0;
+                    buildHighlight(text);
+                    toggleStatusVisibility(true);
+                    setStatus('playing', t.reading);
+
+                    DOM.btnPlay.disabled = true;
+                    if (DOM.btnPause) DOM.btnPause.disabled = false;
+                    if (DOM.btnStop) DOM.btnStop.disabled = false;
+
+                    // Keep-alive for long texts
+                    state.keepAliveTimer = setInterval(() => {
+                        if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                            window.speechSynthesis.pause();
+                            window.speechSynthesis.resume();
+                        }
+                    }, 10000);
+
+                    playChunk(0);
+                });
+            }
+
+            if (DOM.btnPause) {
+                DOM.btnPause.addEventListener('click', () => {
+                    if (window.speechSynthesis.speaking && !state.isPaused) {
+                        state.isPaused = true;
+                        state.pausedAtChunk = state.chunkIndex;
+                        // pause() Chrome'da anlık durdurmaz; cancel() anında keser
+                        window.speechSynthesis.cancel();
+                        setStatus('paused', t.paused);
+                        if (DOM.btnPlay) {
+                            DOM.btnPlay.disabled = false;
+                            DOM.btnPlay.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> ${t.resume}`;
+                        }
+                        DOM.btnPause.disabled = true;
+                    }
+                });
+            }
+
+            if (DOM.btnStop) {
+                DOM.btnStop.addEventListener('click', () => {
+                    if (DOM.highlightBox) DOM.highlightBox.style.display = 'none';
+                    finishPlayback(true);
+                });
+            }
+
+            // Init — restore saved preferences
+            const savedRate = localStorage.getItem('tts-rate');
+            if (savedRate && DOM.rateSlider) {
+                DOM.rateSlider.value = savedRate;
+                DOM.rateLabel.textContent = `${parseFloat(savedRate).toFixed(2)}×`;
+            }
+            const savedPitch = localStorage.getItem('tts-pitch');
+            if (savedPitch && DOM.pitchSlider) {
+                DOM.pitchSlider.value = savedPitch;
+                DOM.pitchLabel.textContent = parseFloat(savedPitch).toFixed(2);
+            }
+            const savedVol = localStorage.getItem('tts-vol');
+            if (savedVol && DOM.volSlider) {
+                DOM.volSlider.value = savedVol;
+                DOM.volLabel.textContent = `${Math.round(parseFloat(savedVol) * 100)}%`;
+            }
+            const savedText = localStorage.getItem('tts-text');
+            if (savedText && DOM.input) {
+                DOM.input.value = savedText;
+                DOM.charCount.textContent = `${savedText.length.toLocaleString(t.locale)} ${t.characters}`;
+            }
+
+            toggleStatusVisibility(false);
+
+        }); // DOMContentLoaded
+    </script>
+</body>
+
+</html>
