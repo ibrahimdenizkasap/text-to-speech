@@ -1,10 +1,14 @@
-# text-to-speech.html
+# Text to Speech
 
 Browser-based, free text-to-speech tool. No character limit, no setup, no internet connection required.
 
+[Download](https://github.com/ibrahimdenizkasap/text-to-speech/raw/main/tts.html) directly, or click `tts.html` at the top of this page.
+
+Check out the [live preview](https://denizkasap.net/en/tools/text-to-speech) on my website.
+
 ## Usage
 
-1. Download `text-to-speech.html`
+1. Download `tts.html`
 2. Open it in your browser
 3. Paste your text and hit play
 
