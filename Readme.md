@@ -4,7 +4,7 @@ Browser-based, free text-to-speech tool. No character limit, no setup, no intern
 
 **DOES NOT SUPPORT DOWNLOADING**. For that, try [TTSMaker](https://ttsmaker.com/).
 
-[Download](https://github.com/ibrahimdenizkasap/text-to-speech/raw/main/tts.html) directly, or click `tts.html` at the top of this page.
+[Download](https://github.com/ibrahimdenizkasap/text-to-speech/releases/download/v1.0/tts.html) directly, or click `tts.html` at the top of this page.
 
 Check out the [live preview](https://denizkasap.net/en/tools/text-to-speech) on my website.
 
